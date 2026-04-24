@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# puyo-game
 
-## Getting Started
+ブラウザで遊べる最大4人対戦のぷよぷよです。
 
-First, run the development server:
+## 機能
+
+- 最大4人のリアルタイムオンライン対戦
+- ルームコードを共有するだけで手軽に参加
+- チェーンを決めるとおじゃまぷよが他の全プレイヤーに送られる
+- 最後まで生き残ったプレイヤーの勝利
+
+## 操作方法
+
+| キー | 操作 |
+|------|------|
+| ← → | 左右移動 |
+| ↓ | ソフトドロップ |
+| Space | ハードドロップ |
+| Z | 左回転 |
+| X | 右回転 |
+
+## ローカルで動かす
+
+ターミナルを2つ開いて実行してください。
 
 ```bash
+# ターミナル1: WebSocketサーバー
+npx partykit dev
+
+# ターミナル2: Next.jsサーバー
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`http://localhost:3000` をブラウザの複数タブで開くとマルチ対戦を試せます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 技術スタック
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Next.js 16](https://nextjs.org/) — フロントエンド
+- [Partykit](https://www.partykit.io/) — WebSocketサーバー（ルーム管理・おじゃま中継）
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
 
-## Learn More
+## デプロイ
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# PartykitサーバーをVercelとは別にデプロイ
+npx partykit deploy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# .env.local を本番のPartykitホストに更新
+NEXT_PUBLIC_PARTYKIT_HOST=multi-puyo.<your-username>.partykit.dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# VercelにNext.jsをデプロイ
+vercel --prod
+```
