@@ -43,14 +43,4 @@ npm run dev
 - [Tailwind CSS](https://tailwindcss.com/)
 
 ## デプロイ
-
-```bash
-# PartykitサーバーをVercelとは別にデプロイ
-npx partykit deploy
-
-# .env.local を本番のPartykitホストに更新
-NEXT_PUBLIC_PARTYKIT_HOST=multi-puyo.<your-username>.partykit.dev
-
-# VercelにNext.jsをデプロイ
-vercel --prod
-```
+https://multi-puyo.vercel.app/
