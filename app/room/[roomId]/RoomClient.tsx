@@ -1,6 +1,12 @@
 'use client';
+import { useRef, useEffect, useState } from 'react';
 import { useMultiGame } from '@/hooks/useMultiGame';
 import PuyoField from '@/components/PuyoField';
+import ChainPopup from '@/components/ChainPopup';
+import ParticleCanvas from '@/components/ParticleCanvas';
+import FloatingScore from '@/components/FloatingScore';
+import ConfettiCanvas from '@/components/ConfettiCanvas';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 interface Props {
@@ -9,13 +15,44 @@ interface Props {
 }
 
 export default function RoomClient({ roomId, playerName }: Props) {
-  const { local, remotePlayers, myId, roomPhase, winnerId, isHost, startGame } = useMultiGame(roomId, playerName);
+  const { local, remotePlayers, myId, roomPhase, winnerId, isHost, startGame, playSelect } = useMultiGame(roomId, playerName);
   const router = useRouter();
 
   const otherPlayers = Object.entries(remotePlayers).filter(([id]) => id !== myId);
 
+  // Screen shake when pendingOjama increases
+  const prevOjamaRef = useRef(0);
+  const [shaking, setShaking] = useState(false);
+
+  useEffect(() => {
+    if (local.pendingOjama > prevOjamaRef.current) {
+      setShaking(true);
+      setTimeout(() => setShaking(false), 500);
+    }
+    prevOjamaRef.current = local.pendingOjama;
+  }, [local.pendingOjama]);
+
+  const isWinner = roomPhase === 'end' && winnerId === myId;
+  const isLoser  = roomPhase === 'end' && winnerId !== myId;
+
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center p-4 gap-4">
+      {/* Confetti for winner */}
+      <ConfettiCanvas active={isWinner} />
+
+      {/* Red flash for loser */}
+      {isLoser && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            pointerEvents: 'none',
+            zIndex: 40,
+            animation: 'red-flash 0.6s ease-out forwards',
+          }}
+        />
+      )}
+
       <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold">Room: {roomId}</h1>
         <span className="text-gray-400 text-sm">{playerName}</span>
@@ -63,11 +100,34 @@ export default function RoomClient({ roomId, playerName }: Props) {
           {/* Local player (large) */}
           <div className="flex flex-col items-center gap-2">
             <div className="text-sm font-semibold text-blue-300">
-              {playerName} <span className="text-yellow-300">{local.score}pt</span>
-              {local.chain > 0 && <span className="text-orange-400 ml-2">{local.chain}連鎖!</span>}
+              {playerName}{' '}
+              <motion.span
+                key={local.score}
+                initial={{ scale: 1.4 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.2 }}
+                className="text-yellow-300 inline-block"
+              >
+                {local.score}pt
+              </motion.span>
             </div>
             <div className="flex gap-2">
-              <PuyoField field={local.field} currentPair={local.currentPair} />
+              <div
+                className="relative"
+                style={shaking ? { animation: 'puyo-shake 0.5s ease-in-out' } : undefined}
+              >
+                <PuyoField field={local.field} currentPair={local.currentPair} />
+                <ParticleCanvas
+                  phase={local.phase}
+                  pendingClearCells={local.pendingClearCells}
+                  field={local.field}
+                  cellPx={36}
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <ChainPopup chain={local.chain} />
+                </div>
+                <FloatingScore score={local.score} />
+              </div>
               <div className="flex flex-col gap-2">
                 <div className="text-xs text-gray-400">NEXT</div>
                 <div className="flex gap-1">
@@ -114,7 +174,7 @@ export default function RoomClient({ roomId, playerName }: Props) {
       {roomPhase === 'end' && (
         <div className="flex flex-col items-center gap-6 mt-8">
           <div className="text-4xl font-bold">
-            {winnerId === myId ? '🎉 勝利！' : '💀 敗北...'}
+            {winnerId === myId ? '勝利！' : '敗北...'}
           </div>
           {winnerId && remotePlayers[winnerId] && (
             <p className="text-xl">
@@ -125,7 +185,7 @@ export default function RoomClient({ roomId, playerName }: Props) {
             {isHost && (
               <button
                 className="bg-green-600 hover:bg-green-500 px-6 py-2 rounded font-bold transition-colors"
-                onClick={startGame}
+                onClick={() => { playSelect(); startGame(); }}
               >
                 もう一度
               </button>

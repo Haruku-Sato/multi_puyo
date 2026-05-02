@@ -24,3 +24,39 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes puyo-flash {
+  0%, 100% { opacity: 1;   filter: brightness(2.5) saturate(1.5); }
+  50%       { opacity: 0.1; filter: brightness(0.4); }
+}
+
+@keyframes puyo-spawn {
+  0%   { transform: scale(0.4); opacity: 0.5; }
+  65%  { transform: scale(1.2); }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+@keyframes puyo-shake {
+  0%        { transform: translate(0, 0) rotate(0deg); }
+  10%       { transform: translate(-6px, -3px) rotate(-1deg); }
+  20%       { transform: translate(6px, 3px) rotate(1deg); }
+  30%       { transform: translate(-5px, 2px) rotate(-0.5deg); }
+  40%       { transform: translate(5px, -2px) rotate(0.5deg); }
+  50%       { transform: translate(-4px, 3px) rotate(-1deg); }
+  60%       { transform: translate(4px, -3px) rotate(1deg); }
+  70%       { transform: translate(-3px, 1px) rotate(0deg); }
+  80%       { transform: translate(3px, -1px) rotate(0.5deg); }
+  90%       { transform: translate(-2px, 2px) rotate(-0.5deg); }
+  100%      { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes red-flash {
+  0%, 100% { background: transparent; }
+  15%      { background: rgba(220, 38, 38, 0.5); }
+  50%      { background: rgba(220, 38, 38, 0.25); }
+}
+
+@keyframes float-up {
+  0%   { transform: translateY(0);   opacity: 1; }
+  100% { transform: translateY(-60px); opacity: 0; }
+}

@@ -6,10 +6,12 @@
 
 ## 機能
 
+- ひとりモード（BGM・効果音付き）
 - 最大4人のリアルタイムオンライン対戦
 - ルームコードを共有するだけで手軽に参加
 - チェーンを決めるとおじゃまぷよが他の全プレイヤーに送られる
 - 最後まで生き残ったプレイヤーの勝利
+- チェーン演出・パーティクルエフェクト・スコアポップアップ
 
 ## 操作方法
 
@@ -41,6 +43,9 @@ npm run dev
 - [Partykit](https://www.partykit.io/) — WebSocketサーバー（ルーム管理・おじゃま中継）
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
+- [Howler.js](https://howlerjs.com/) — BGM・効果音
+- [Framer Motion](https://www.framer.com/motion/) — チェーン演出・スコアアニメーション
+- Canvas API — パーティクルエフェクト・紙吹雪
 
 ## デプロイ
 https://multi-puyo.vercel.app/
